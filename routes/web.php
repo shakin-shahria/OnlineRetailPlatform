@@ -5,6 +5,7 @@ use App\Http\Middleware\TestMiddleware;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CategoryController;
 
 // The Welcome route
 Route::get('/', fn() => view('welcome'));
@@ -13,6 +14,7 @@ Route::get('/', fn() => view('welcome'));
 Route::namespace('App\Http\Controllers\Admin')->prefix('admin')->group(function() {
    
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard'); // Changed the name
+    Route::resource('/category', 'CategoryController');
 
     Route::namespace('Auth')->group(function() {
 
@@ -20,6 +22,17 @@ Route::namespace('App\Http\Controllers\Admin')->prefix('admin')->group(function(
         Route::post('/login', [LoginController::class, 'login'])->name('admin.login.post'); // Added a name for the post route
         Route::post('/logout', [LoginController::class, 'logout'])->name('admin.logout');
     });
+
+
+
+    // routes/web.php
+
+   Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('category')->name('category.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+    });
+});
+
 });
 
 
