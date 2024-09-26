@@ -96,6 +96,15 @@
                   <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
               </form>
+
+              <!-- Hidden Delete Forms for Each Category -->
+              @foreach($data['all_records'] as $category)
+                <form id="deleteCategory_{{ $category->category_row_id }}" action="{{ route('category.destroy', $category->category_row_id) }}" method="POST" style="display: none;">
+                  @csrf
+                  @method('DELETE')
+                </form>
+              @endforeach
+
           </div>
           <!-- /.card-body -->
         </div>
@@ -123,13 +132,14 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-outline submitDeleteModal">Submit</button>
+        <button type="button" class="btn btn-outline submitDeleteModal">Delete</button>
       </div>
     </div>
     <!-- /.modal-content -->
   </div>
   <!-- /.modal-dialog -->
 </div>
+
 <script src="{{ asset('admin_files/plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('admin_files/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 
@@ -142,15 +152,12 @@
       $('.deleteLink').click(function(){
       	var category_name = $(this).attr('category_name');
       	var category_row_id = $(this).attr('category_row_id');
-      	console.log(category_name);
-      	$('#category-delete-modal .catname').empty();
-      	$('#category-delete-modal .catname').append(category_name);
+      	$('#category-delete-modal .catname').text(category_name);
       	$('#category-delete-modal .submitDeleteModal').attr('category_row_id', category_row_id);
       });
 
       $('.submitDeleteModal').click(function(){
       	var category_row_id = $(this).attr('category_row_id');
-        console.log(category_row_id);
       	$('#deleteCategory_'+category_row_id).submit();
       });
   });

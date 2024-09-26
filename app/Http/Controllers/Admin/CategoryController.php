@@ -1,20 +1,18 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use Intervention\Image\Laravel\Facades\Image;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Common;
-use Intervention\Image\Facades\Image; // Corrected import for Image
+//use Intervention\Image\Facades\Image; // Corrected import for Image
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         $common_model = new Common();      
@@ -22,9 +20,7 @@ class CategoryController extends Controller
         return view('admin.category.index', compact('data'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
         $common_model = new Common();      
@@ -32,10 +28,18 @@ class CategoryController extends Controller
         return view('admin.category.create', compact('data'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+
+
+
+
+
+
+
+
+
+
+        public function store(Request $request)
     {
         $category_model = new Category();
         $category_model->category_name = $request->category_name;  
@@ -55,7 +59,7 @@ class CategoryController extends Controller
             $category_image->move(public_path('uploads/category/original/'), $filename);
     
             // Corrected path and method for image resizing
-            $image_resize = Image::make(public_path('uploads/category/original/' . $filename));
+            $image_resize = Image::read(public_path('uploads/category/original/' . $filename));
             $image_resize->resize(200, null, function ($constraint) {
                 $constraint->aspectRatio();
             });
@@ -79,17 +83,36 @@ class CategoryController extends Controller
         return Redirect::route('category.index')->with('success', 'Category Created Successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function show(string $id)
     {
         // This method is currently empty
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
+
+
+
+
+
+
+
+
+
+
     public function edit(string $id)
     {
         $common_model = new Common();       
@@ -101,9 +124,20 @@ class CategoryController extends Controller
         return view('admin.category.edit', ['data' => $data]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function update(Request $request, string $id)
     {
         $category_model = Category::find($request->category_row_id); // Fetch the model for the update
@@ -131,7 +165,7 @@ class CategoryController extends Controller
             $filename = time() . '_' . $category_image->getClientOriginalName();
             $category_image->move(public_path('uploads/category/original/'), $filename);
 
-            $image_resize = Image::make(public_path('uploads/category/original/' . $filename));
+            $image_resize = Image::read(public_path('uploads/category/original/' . $filename));
             $image_resize->resize(200, null, function ($constraint) {
                 $constraint->aspectRatio();
             });
@@ -172,23 +206,32 @@ class CategoryController extends Controller
 
 
 
+
+
+
+
+
+
     public function destroy($id)
     {
-        try {
-            $category = Category::findOrFail($id);
-
-            // Delete associated image if exists
-            if ($category->category_image && file_exists(public_path('uploads/category/' . $category->category_image))) {
-                unlink(public_path('uploads/category/' . $category->category_image));
+        $category = Category::find($id);
+        
+        if ($category) {
+            // Check if the category has children
+            if ($category->has_child == 0) {
+                $category->forceDelete(); // Use forceDelete() if using soft deletes
+                return redirect()->route('category.index')->with('success', 'Category deleted successfully.');
+            } else {
+                return redirect()->route('category.index')->with('error', 'Cannot delete category with children.');
             }
-
-            $category->delete();
-
-            return Redirect::route('category.index')->with('success', 'Category deleted successfully.');
-        } catch (\Exception $e) {
-            return Redirect::back()->with('error', 'Error deleting category: ' . $e->getMessage());
         }
+    
+        return redirect()->route('category.index')->with('error', 'Category not found.');
     }
+    
+
+    
+
 
     
     

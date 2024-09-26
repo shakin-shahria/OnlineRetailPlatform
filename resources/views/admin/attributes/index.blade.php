@@ -57,7 +57,8 @@
                         @endforeach
                       </td>
                       <td>
-                        <button onclick="window.location='{{ url('/')}}/admin/category/{{$row->attribute_row_id }}/edit'" class="btn btn-sm btn-warning mb-2">Edit</button>
+                      <button onclick="window.location='{{ route('attributes.edit', ['attribute' => $row->attribute_row_id]) }}'" class="btn btn-sm btn-warning mb-2">Edit</button>
+
                         <form id="deleteCategory_{{$row->attribute_row_id }}" action="{{ url('/')}}/admin/category/{{$row->attribute_row_id }}" style="display: inline;" method="POST">
                           {{ method_field('DELETE') }}
                           @csrf
