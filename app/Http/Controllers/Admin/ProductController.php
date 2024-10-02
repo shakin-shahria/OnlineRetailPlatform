@@ -19,15 +19,40 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $common_model = new Common();
+    // public function creat()
+    // {
+    //     $common_model = new Common();
         
-        $all_categories = $common_model->allCategories();
-        $all_attributes = $common_model->allAttributes();
+    //     $all_categories = $common_model->allCategories();
+    //     $all_attributes = $common_model->allAttributes();
 
+    //     return view('admin.products.create');
+     
+    //    #return view('admin.products.create', compact('all_categories', 'all_attributes'));
+    // }
+
+    // 
+    
+
+    public function create(){
+        $common_model = new common();
+        $all_categories = $common_model->allCategories(); // Fetch categories
+        $all_attributes = $common_model->allAttributes(); // Fetch attributes
+    
+        // Pass both $all_categories and $all_attributes to the view
         return view('admin.products.create', compact('all_categories', 'all_attributes'));
     }
+    
+    
+
+
+
+
+
+
+
+
+
 
     /**
      * Store a newly created resource in storage.
