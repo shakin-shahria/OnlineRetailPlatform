@@ -6,7 +6,10 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AttributesController;
 use App\Http\Controllers\Admin\ProductController;
-
+use App\Http\Middleware\TestMiddleware;
+use App\Http\Controllers\CommonController;
+use App\Http\Controllers\AboutUsController;
+Auth::routes();
 // The Welcome route
 Route::get('/', fn() => view('welcome'));
 
@@ -31,6 +34,16 @@ Route::prefix('admin')->group(function () {
     });
 });
 
+Route::namespace("App\Http\Controllers\Admin")->prefix('admin')->group(function(){
+
+   
+    Route::resource('/products', 'ProductController');
+    Route::post('/get-product-details', 'ProductController@getProductDetails')->name('get-product-details');
+
+   
+
+
+});
 
 
 
