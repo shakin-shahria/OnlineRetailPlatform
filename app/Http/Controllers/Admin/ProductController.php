@@ -150,26 +150,178 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+    public function edit($id)
+{
+    // Find the product by ID
+    $product = Product::find($id);
+
+    $common_model = new Common();
+
+    // Fetch all categories and attributes
+    $all_categories = $common_model->allCategories();
+    $all_attributes = $common_model->allAttributes();
+
+    // Pass the product, all categories, and all attributes to the view
+    return view('admin.products.edit', compact('product', 'all_categories', 'all_attributes'));
+}
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(Request $request, $id)
+{
+    // Find the product by ID
+    $product_db = Product::findOrFail($id);
+
+    // Since you are using PUT method, change this to handle all methods, not just POST
+    if ($request->isMethod('put')) {
+
+        // Validate the incoming request data
+        $validated = $request->validate([
+            'product_name' => 'required',
+            'parent_id' => 'required',
+            'product_sku' => 'required'
+        ]);
+
+        // Update the product's attributes
+        $product_db->product_title = $request->product_name;
+        $product_db->category_id = $request->parent_id;
+        $product_db->short_description = $request->short_description ?: null;
+        $product_db->long_description = $request->long_description ?: null;
+        $product_db->brand_id = $request->brand_id ?: null;
+        $product_db->product_tags = $request->product_tags ?: null;
+        $product_db->product_model = $request->product_model ?: null;
+        $product_db->product_sku = $request->product_sku;
+        $product_db->product_price = $request->product_price;
+        $product_db->product_unit = $request->product_unit;
+
+        $product_db->is_featured = $request->is_featured ? 1 : 0;
+        $product_db->top_selling = $request->top_selling ? 1 : 0;
+        $product_db->is_refundable = $request->is_refundable ? 1 : 0;
+       // $product_db->updated_by = Auth::guard('admin')->user()->id; // Update who modified the product
+
+        $product_db->save();
+
+        // Handle feature image upload
+        if ($request->hasFile('feature_image')) {
+            $feature_image = $request->file('feature_image');
+            $filename = time() . '_' . $feature_image->getClientOriginalName();
+            $product_image = ProductImage::where('product_id', $id)->first() ?? new ProductImage();
+            $product_image->product_id = $id;
+            $product_image->feature_image = $filename;
+
+            // Move and resize the feature image
+            $feature_image->move(public_path('uploads/products/') . $id . '/original/', $filename);
+            $image_resize = Image::read(public_path('uploads/products/') . $id . '/original/' . $filename);
+            $image_resize->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $save_path = public_path('uploads/products/') . $id . '/thumbnail/';
+            if (!file_exists($save_path)) {
+                mkdir($save_path, 0777, true);
+            }
+            $image_resize->save(public_path('uploads/products/') . $id . '/thumbnail/' . $filename);
+
+            $product_image->save();
+        }
+
+        // Handle gallery image upload
+        if ($request->hasFile('gallery_images')) {
+            $gallery_images = $request->file('gallery_images');
+            $galleryimg = [];
+
+            foreach ($gallery_images as $gdata) {
+                $gfilename = time() . '_' . $gdata->getClientOriginalName();
+                $galleryimg[] = $gfilename;
+                $gdata->move(public_path('uploads/products/') . $id . '/gallery_images/', $gfilename);
+            }
+            // Store gallery images
+            $product_image->gallery_images = json_encode($galleryimg);
+            $product_image->save();
+        }
+
+        // Update product attributes
+        if (isset($request->attr_price)) {
+            ProductAttribute::where('product_id', $id)->delete();
+
+            $total_quantity = 0;
+            $attribute_price = $request->attr_price;
+            $attribute_quantity = $request->attr_quantity;
+
+            foreach ($attribute_price as $attribute_title => $value) {
+                $total_quantity += $attribute_quantity[$attribute_title];
+                $product_attribute = new ProductAttribute();
+                $product_attribute->product_id = $id;
+                $product_attribute->attribute_title = $attribute_title;
+                $product_attribute->attribute_price = $value;
+                $product_attribute->attribute_quantity = $attribute_quantity[$attribute_title];
+                $product_attribute->save();
+            }
+
+            // Update stock quantity
+            $product_inventory = ProductInventory::where('product_id', $id)->first() ?? new ProductInventory();
+            $product_inventory->product_id = $id;
+            $product_inventory->stock_amount = $total_quantity;
+            $product_inventory->save();
+        }
+
+        //Alert::success('Product Updated Successfully!', 'success');
+        return redirect()->route('products.index');
     }
+
+    return redirect()->back()->withErrors('Invalid request method');
+}
+
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy($id)
+{
+    // Find the product by its ID
+    $product = Product::findOrFail($id);
+
+    // Optionally delete associated images (feature and gallery)
+    $product_images = ProductImage::where('product_id', $id)->first();
+    if ($product_images) {
+        // Delete the feature image
+        if (file_exists(public_path('uploads/products/' . $id . '/original/' . $product_images->feature_image))) {
+            unlink(public_path('uploads/products/' . $id . '/original/' . $product_images->feature_image));
+        }
+        if (file_exists(public_path('uploads/products/' . $id . '/thumbnail/' . $product_images->feature_image))) {
+            unlink(public_path('uploads/products/' . $id . '/thumbnail/' . $product_images->feature_image));
+        }
+
+        // Delete the gallery images
+        if ($product_images->gallery_images) {
+            $gallery_images = json_decode($product_images->gallery_images);
+            foreach ($gallery_images as $gimage) {
+                if (file_exists(public_path('uploads/products/' . $id . '/gallery_images/' . $gimage))) {
+                    unlink(public_path('uploads/products/' . $id . '/gallery_images/' . $gimage));
+                }
+            }
+        }
+
+        // Finally, delete the image record
+        $product_images->delete();
     }
+
+    // Optionally delete associated product attributes
+    ProductAttribute::where('product_id', $id)->delete();
+
+    // Optionally delete product inventory
+    ProductInventory::where('product_id', $id)->delete();
+
+    // Delete the product itself
+    $product->delete();
+
+    // Redirect back with success message
+   // Alert::success('Product Deleted Successfully!', 'success');
+    return redirect()->route('products.index');
+}
+
 
 
     public function getProductDetails(Request $request){

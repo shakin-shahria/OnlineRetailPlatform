@@ -22,7 +22,7 @@ Route::prefix('admin')->group(function () {
     // Category management routes using resource
     Route::resource('/category', CategoryController::class);
     Route::resource('/attributes', AttributesController::class);
-    Route::resource('/products', ProductController::class);
+    //Route::resource('/products', ProductController::class);
 
     // Authentication routes for the admin section
 

@@ -71,7 +71,7 @@
                                   <form id="deleteCategory_{{$pid}}" action="{{ url('/')}}/admin/products/{{$pid}}" style="display: inline;" method="POST">
                                     {{ method_field('DELETE') }}
                                     @csrf
-                                    <input class="btn btn-sm btn-danger deleteLink" category_name="{{ $row->product_title }}" category_row_id="{{$pid}}" data-toggle="modal" data-target="#category-delete-modal" deleteID="{{$pid}}" value="Delete" style="width: 100px; margin-top: -8px;">
+                                    <input  type="submit" class="btn btn-sm btn-danger deleteLink" category_name="{{ $row->product_title }}" category_row_id="{{$pid}}" data-toggle="modal" data-target="#category-delete-modal" deleteID="{{$pid}}" value="Delete" style="width: 100px; margin-top: -8px;">
                                   </form>
                                 </td>         
                               </tr>
@@ -120,10 +120,10 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Delete Category</h4>
+        <h4 class="modal-title">Delete Product</h4>
       </div>
       <div class="modal-body">
-        <p>Do you really want to delete <b class="catname"></b> category?</p>
+        <p>Do you really want to delete <b class="catname"></b> the product?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
