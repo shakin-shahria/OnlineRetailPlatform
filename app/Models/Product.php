@@ -25,4 +25,8 @@ class Product extends Model
     public function product_attribute(){
         return $this->hasMany('App\Models\ProductAttribute', 'product_id', 'product_id');
     }
+
+    public function product_discounts(){
+        return $this->hasOne('App\Models\ProductDiscount', 'product_id', 'product_id');
+    }
 }

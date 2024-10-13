@@ -77,11 +77,11 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Manage Products</h3>
+                <h3 class="card-title">Edit Products Information</h3>
               </div>
               
               <!-- Main content -->
-                <form role="form" action="{{ route('products.update') }}" method="POST" enctype="multipart/form-data">
+                <form role="form" action="{{ route('products.update',$product->product_id) }}" method="POST" enctype="multipart/form-data">
                   @csrf
                   @method('PUT')
                     <section class="content" style="padding: 10px;">

@@ -43,6 +43,9 @@
 			                    <th>Category</th>
 			                    <th>Brand</th>
 			                    <th>Price</th>
+                          <th>Discount(TK)</th>
+                          <th>Starded at</th>
+                          <th>Ends at</th>
 			                    <th>Quantity</th>
 			                    <th>Action</th>
 			                  </tr>
@@ -64,6 +67,12 @@
                                 <td align="left">{{ $row->getCategory->category_name }}</td>
                                 <td align="left"></td>
                                 <td align="left">{{ $row->product_price }}</td>
+                                <td align="left">@if(isset($row->product_discounts->discount_price)){{ $row->product_discounts->discount_price }}@endif</td>
+
+                                <td align="left">@if(isset($row->product_discounts->started_at)){{ $row->product_discounts->started_at }}@endif</td>
+
+                                <td align="left">@if(isset($row->product_discounts->ends_at)){{ $row->product_discounts->ends_at }}@endif</td>
+
                                 <td align="left">@if(isset($row->product_inventory->stock_amount)){{ $row->product_inventory->stock_amount }}@endif</td> 
                                 <td>
                                   <button class="btn btn-sm btn-info mb-2 product_details" data-toggle="modal" data-target="#modal-xl" product_id="{{ $pid }}">View</button>

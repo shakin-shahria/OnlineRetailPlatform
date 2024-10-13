@@ -13,6 +13,7 @@ use App\Models\ProductInventory;
 use App\Models\ProductAttribute;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Laravel\Facades\Image;
+//use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Redirect;
 Use Alert;
 use DB;
@@ -131,6 +132,41 @@ class ProductController extends Controller
                 $product_inventory->product_id = $pid;
                 $product_inventory->stock_amount = $total_quantity;
                 $product_inventory->save();
+
+
+               // Handle discount data if available
+    if ($pid && $request->discount_price && $request->discount_type && $request->datefilter) {
+        // Split the date range from 'datefilter'
+        $dates = explode(' - ', $request->datefilter); // Assuming the dates are separated by a ' - '
+        if (count($dates) === 2) {
+            $started_at = date('Y-m-d', strtotime($dates[0]));
+            $ends_at = date('Y-m-d', strtotime($dates[1]));
+
+            // Save discount information
+            $product_discount = new ProductDiscount();
+            $product_discount->product_id = $pid;
+            $product_discount->discount_price = $request->discount_price;
+            $product_discount->discount_type = $request->discount_type;
+            $product_discount->started_at = $started_at;
+            $product_discount->ends_at = $ends_at;
+            $product_discount->save();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
 
             Alert::success('Product Added Successfully!', 'success');    
