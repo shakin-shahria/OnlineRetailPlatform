@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\AttributesController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Middleware\TestMiddleware;
@@ -39,6 +40,9 @@ Route::namespace("App\Http\Controllers\Admin")->prefix('admin')->group(function(
    
     Route::resource('/products', 'ProductController');
     Route::post('/get-product-details', 'ProductController@getProductDetails')->name('get-product-details');
+
+
+    Route::resource('permissions', PermissionController::class);
 
    
 
