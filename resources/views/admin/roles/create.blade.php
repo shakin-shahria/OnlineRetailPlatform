@@ -10,18 +10,28 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Permission Management</h1>
+        <h1>Create New User</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Permission Management</li>
+          <li class="breadcrumb-item active">Users Management</li>
         </ol>
       </div>
     </div>
   </div><!-- /.container-fluid -->
 </section>
 
+@if (count($errors) > 0)
+    <div class="alert alert-danger">
+      <strong>Whoops!</strong> There were some problems with your input.<br><br>
+      <ul>
+         @foreach ($errors->all() as $error)
+           <li>{{ $error }}</li>
+         @endforeach
+      </ul>
+    </div>
+@endif
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
@@ -30,37 +40,25 @@
 
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Permission Management</h3>
-            <a class="btn btn-primary float-end" style="float:right" href="{{ route('permissions.create') }}">Add New Permission</a>
+            <h3 class="card-title">Create New Role</h3>
+            <div class="pull-right" style="float:right">
+              <a class="btn btn-primary btn-sm mb-2" href="{{ route('users.index') }}"><i class="fa fa-arrow-left"></i> Back</a>
+            </div>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
+            
+            <form action="{{ route('roles.store') }}" method="POST">
+                @csrf
 
-            <table id="attribute_table" class="table table-bordered table-striped">
-              <thead>
-                  <tr>
-                    <th>Sl.</th>
-                    <th>Permission Name</th>
-                    <th>Action</th>
-                  </tr>
-              </thead>
-              <tbody>  
-                    @foreach($permissions as $row)  
-                    <tr>            
-                      <td>{{ $row['id'] }}</td> 
-                      <td align="center">{{ $row['name'] }}</td>
-                      <td>
-                        <button onclick="window.location='" class="btn btn-sm btn-warning mb-2">Edit</button>
-                        <form id="deleteCategory_{{ $row['id'] }}" action="" style="display: inline;" method="POST">
-                          {{ method_field('DELETE') }}
-                          @csrf
-                          <input class="btn btn-sm btn-danger deleteLink"  data-toggle="modal" data-target="#category-delete-modal"  value="Delete" style="width: 100px; margin-top: -8px;">
-                        </form>
-                      </td>                        
-                    </tr>
-                  @endforeach
-							</tbody>
-						</table>
+                <div class="mb-3">
+                    <label for="">Role Name</label>
+                    <input type="text" name="name" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
         
           </div>
           <!-- /.card-body -->
@@ -101,24 +99,10 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-      $('#example1').DataTable({
+      $('#product_table').DataTable({
       	"order": [],
       });
 
-      $('.deleteLink').click(function(){
-      	var category_name = $(this).attr('category_name');
-      	var category_row_id = $(this).attr('category_row_id');
-      	console.log(category_name);
-      	$('#category-delete-modal .catname').empty();
-      	$('#category-delete-modal .catname').append(category_name);
-      	$('#category-delete-modal .submitDeleteModal').attr('category_row_id', category_row_id);
-      });
-
-      $('.submitDeleteModal').click(function(){
-      	var category_row_id = $(this).attr('category_row_id');
-        console.log(category_row_id);
-      	$('#deleteCategory_'+category_row_id).submit();
-      });
   });
 </script>
 @endsection
