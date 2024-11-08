@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Models\User;
+
     
 class UserController extends Controller
 {
@@ -70,12 +72,17 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id): View
-    {
-        $user = User::find($id);
+     public function show($id): View
+     {
+        $user = Admin::find($id);
 
-        return view('users.show',compact('user'));
+         return view('admin.users.show',compact('user'));
     }
+
+
+
+    
+
     
     /**
      * Show the form for editing the specified resource.
@@ -83,14 +90,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id): View
-    {
-        $user = User::find($id);
-        $roles = Role::pluck('name','name')->all();
-        $userRole = $user->roles->pluck('name','name')->all();
     
-        return view('users.edit',compact('user','roles','userRole'));
-    }
     
     /**
      * Update the specified resource in storage.
@@ -99,31 +99,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'password' => 'same:confirm-password',
-            'roles' => 'required'
-        ]);
     
-        $input = $request->all();
-        if(!empty($input['password'])){ 
-            $input['password'] = Hash::make($input['password']);
-        }else{
-            $input = Arr::except($input,array('password'));    
-        }
-    
-        $user = User::find($id);
-        $user->update($input);
-        DB::table('model_has_roles')->where('model_id',$id)->delete();
-    
-        $user->assignRole($request->input('roles'));
-    
-        return redirect()->route('users.index')
-                        ->with('success','User updated successfully');
-    }
     
     /**
      * Remove the specified resource from storage.
@@ -131,10 +107,111 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id): RedirectResponse
-    {
-        User::find($id)->delete();
-        return redirect()->route('users.index')
-                        ->with('success','User deleted successfully');
+    //  public function destroy($id): RedirectResponse
+    //  {
+    //      User::find($id)->delete();
+    //      return redirect()->route('users.index')
+    //                      ->with('success','User deleted successfully');
+    // }
+
+
+//     public function destroy($id)
+// {
+//     //try {
+//         // Find the user by ID
+//         $admin = Admin::findOrFail($id);
+
+//         // Delete the user
+//         $admin->delete();
+
+//         // Redirect back with a success message
+//      //   return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+//    // } catch (\Exception $e) {
+//         // Handle the error if the user could not be deleted
+//        return redirect()->route('users.index')->with('error', 'Failed to delete user.');
+//     //}
+// }
+
+
+public function destroy($id)
+{
+    // Find the user by ID
+    $admin = Admin::find($id);
+
+    // Check if user exists
+    if ($admin) {
+        // Delete the user
+        $admin->delete();
+
+        // Redirect with success message
+        return redirect()->route('users.index');
     }
+
+    // If user not found, redirect with error message
+    return redirect()->route('users.index');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function edit($id)
+{
+    // Retrieve the user by ID
+    $user = Admin::findOrFail($id);
+
+    // Return the edit view with user data
+    return view('admin.users.edit', compact('user'));
+}
+
+public function update(Request $request, $id)
+{
+    // Validate the incoming request data
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $id, // Ignore current user email for uniqueness
+        'password' => 'nullable|min:8' // Password is optional
+    ]);
+
+    // Find the user by ID
+    $admin = Admin::findOrFail($id);
+
+    // Update user fields
+    $admin->name = $request->input('name');
+    $admin->email = $request->input('email');
+    if ($request->filled('password')) {
+        $admin->password = bcrypt($request->input('password'));
+    }
+
+    // Save changes
+    $admin->save();
+
+    // Redirect with success message
+    return redirect()->route('users.index')->with('success', 'User updated successfully');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

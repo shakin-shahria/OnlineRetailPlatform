@@ -2,7 +2,6 @@
 
 @section('content')
 <!-- Datatable -->
-
 <link rel="stylesheet" href="{{ asset('/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 
 <!-- Content Header (Page header) -->
@@ -19,7 +18,7 @@
         </ol>
       </div>
     </div>
-  </div><!-- /.container-fluid -->
+  </div>
 </section>
 
 <!-- Main content -->
@@ -27,15 +26,12 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
-
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Permission Management</h3>
             <a class="btn btn-primary float-end" style="float:right" href="{{ route('permissions.create') }}">Add New Permission</a>
           </div>
-          <!-- /.card-header -->
           <div class="card-body">
-
             <table id="attribute_table" class="table table-bordered table-striped">
               <thead>
                   <tr>
@@ -50,74 +46,75 @@
                       <td>{{ $row['id'] }}</td> 
                       <td align="center">{{ $row['name'] }}</td>
                       <td>
-                        <button onclick="window.location='" class="btn btn-sm btn-warning mb-2">Edit</button>
-                        <form id="deleteCategory_{{ $row['id'] }}" action="" style="display: inline;" method="POST">
-                          {{ method_field('DELETE') }}
+                         <a href="{{ route('permissions.edit', $row['id']) }}" class="btn btn-sm btn-warning mb-2">Edit</a>
+
+                        <!-- Delete Form with Data Attributes -->
+                        <form id="deleteCategory_{{ $row['id'] }}" action="{{ route('permissions.destroy', $row['id']) }}" style="display: inline;" method="POST">
                           @csrf
-                          <input class="btn btn-sm btn-danger deleteLink"  data-toggle="modal" data-target="#category-delete-modal"  value="Delete" style="width: 100px; margin-top: -8px;">
+                          @method('DELETE')
+                          <button type="button" 
+                                  class="btn btn-sm btn-danger deleteLink" 
+                                  data-toggle="modal" 
+                                  data-target="#category-delete-modal"
+                                  data-category-name="{{ $row['name'] }}" 
+                                  data-category-row-id="{{ $row['id'] }}">
+                            Delete
+                          </button>
                         </form>
                       </td>                        
                     </tr>
                   @endforeach
-							</tbody>
-						</table>
-        
+              </tbody>
+            </table>
           </div>
-          <!-- /.card-body -->
         </div>
-        <!-- /.card -->
       </div>
-      <!-- /.col -->
     </div>
-    <!-- /.row -->
   </div>
-  <!-- /.container-fluid -->
 </section>
-<!-- /.content -->
 
-
+<!-- Delete Confirmation Modal -->
 <div class="modal modal-danger fade" id="category-delete-modal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title">Delete Permission</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Delete Category</h4>
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
-        <p>Do you really want to delete <b class="catname"></b> category?</p>
+        <p>Do you really want to delete <b class="catname"></b> permission?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-outline submitDeleteModal">Submit</button>
+        <button type="button" class="btn btn-outline submitDeleteModal">Delete</button>
       </div>
     </div>
-    <!-- /.modal-content -->
   </div>
-  <!-- /.modal-dialog -->
 </div>
+
 <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 
 <script type="text/javascript">
   $(document).ready(function() {
-      $('#example1').DataTable({
-      	"order": [],
+      $('#attribute_table').DataTable({
+          "order": []
       });
 
+      // Open modal and set permission details
       $('.deleteLink').click(function(){
-      	var category_name = $(this).attr('category_name');
-      	var category_row_id = $(this).attr('category_row_id');
-      	console.log(category_name);
-      	$('#category-delete-modal .catname').empty();
-      	$('#category-delete-modal .catname').append(category_name);
-      	$('#category-delete-modal .submitDeleteModal').attr('category_row_id', category_row_id);
+          var category_name = $(this).data('category-name');
+          var category_row_id = $(this).data('category-row-id');
+          $('#category-delete-modal .catname').text(category_name);
+          $('.submitDeleteModal').data('category-row-id', category_row_id);
       });
 
+      // Submit delete form on modal confirmation
       $('.submitDeleteModal').click(function(){
-      	var category_row_id = $(this).attr('category_row_id');
-        console.log(category_row_id);
-      	$('#deleteCategory_'+category_row_id).submit();
+          var category_row_id = $(this).data('category-row-id');
+          $('#deleteCategory_' + category_row_id).submit();
       });
   });
 </script>

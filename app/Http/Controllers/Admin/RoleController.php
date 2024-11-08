@@ -20,11 +20,11 @@ class RoleController extends Controller
      */
     function __construct()
     {
-        $this->middleware('auth:admin'); 
-        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => [' index','store']]);
-         $this->middleware('permission:role-create', ['only' => ['create','store']]);
-         $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+        // $this->middleware('auth:admin'); 
+        // $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => [' index','store']]);
+        //  $this->middleware('permission:role-create', ['only' => ['create','store']]);
+        //  $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+        //  $this->middleware('permission:role-delete', ['only' => ['destroy']]);
     }
     
     public function index()
@@ -80,12 +80,7 @@ class RoleController extends Controller
         return redirect('roles')->with('status','Role Updated Successfully');
     }
 
-    public function destroy($roleId)
-    {
-        $role = Role::find($roleId);
-        $role->delete();
-        return redirect('roles')->with('status','Role Deleted Successfully');
-    }
+   
 
     public function addPermissionToRole($roleId)
     {
@@ -114,4 +109,27 @@ class RoleController extends Controller
 
         return redirect()->back()->with('status','Permissions added to role');
     }
+
+    public function show(string $id)
+    {
+        $role = Role::with('permissions')->findOrFail($id);
+        return view('admin.roles.show', compact('role'));
+    }
+
+
+    public function destroy($id)
+    {
+        $role = Role::findOrFail($id); // Retrieve the role or return a 404 error if not found
+        $role->delete(); // Delete the role from the database
+    
+        return redirect()->route('roles.index')
+            ->with('success', 'Role deleted successfully.');
+    }
+
+
+
+
+
+
+
 }

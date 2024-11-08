@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\AttributesController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\RolesController;
 
 // The Welcome route
 Route::get('/', fn() => view('welcome'));
@@ -27,9 +28,26 @@ Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->group(function 
         Route::resource('roles', 'RoleController');
         Route::get('/roles/{roleId}/give-permissions', 'RoleController@addPermissionToRole');
         Route::put('/roles/{roleId}/give-permissions', 'RoleController@givePermissionToRole');
+        Route::get('admin/roles/{role}', 'RoleController@show')->name('roles.show');
+       // Route::get('/roles/{role}', [RolesController::class, 'show'])->name('roles.show');
+       //Route::get('/roles/{role}', 'RolesController@show')->name('roles.show');
+
+
+
         
         Route::resource('users', 'UserController');
+        Route::get('admin/users/{user}', 'UserController@show')->name('users.show');
+        Route::get('admin/users/{user}', 'UserController@edit')->name('users.edit');
+        Route::delete('admin/users/{user}', 'UserController@destroy')->name('users.destroy');
+        //Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+
+
+
+
         Route::resource('permissions', 'PermissionController');
+        Route::put('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
+
     });
 
     // Authentication routes

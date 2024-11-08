@@ -13,9 +13,14 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::get();
+       $permissions = Permission::get();
         //dd($permissions);
         return view('admin.permission.index', ['permissions' => $permissions]);
+
+        
+    
+
+
     }
 
     /**
@@ -62,38 +67,70 @@ class PermissionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Permission $permission)
+    public function edit($id)
     {
-        return view('role-permission.permission.edit', ['permission' => $permission]);
+        $permission = Permission::findOrFail($id); // Find the permission by ID
+        return view('admin.permission.edit', compact('permission')); // Load the edit view
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Permission $permission)
-    {
-        $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'unique:permissions,name,'.$permission->id
-            ]
-        ]);
+    
 
-        $permission->update([
-            'name' => $request->name
-        ]);
 
-        return redirect('permissions')->with('status','Permission Updated Successfully');
-    }
+    public function update(Request $request, $id)
+  {
+    $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($permissionId)
-    {
-        $permission = Permission::find($permissionId);
-        $permission->delete();
-        return redirect('permissions')->with('status','Permission Deleted Successfully');
-    }
+    $permission = Permission::findOrFail($id);
+    $permission->name = $request->input('name');
+    $permission->save();
+
+    return redirect()->route('permissions.index')->with('success', 'Permission updated successfully');
+ }
+
+
+
+ public function destroy($id)
+ {
+     $permission = Permission::findOrFail($id); // Find the permission by ID
+     $permission->delete(); // Delete the permission from the database
+ 
+     return redirect()->route('permissions.index')->with('success', 'Permission deleted successfully');
+ }
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
