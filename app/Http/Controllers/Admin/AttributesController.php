@@ -12,6 +12,21 @@ class AttributesController extends Controller
 {
     
 
+    public function __construct()
+    {
+        $this->middleware('auth:admin'); 
+    
+        // General permissions required to access index and store actions
+        $this->middleware('permission:attribute-list|attribute-create|attribute-edit|attribute-delete', ['only' => ['index', 'store']]);
+    
+        // Specific permissions for individual actions
+        $this->middleware('permission:attribute-list', ['only' => ['index']]);
+        $this->middleware('permission:attribute-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:attribute-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:attribute-delete', ['only' => ['destroy']]);
+    }
+    
+
 
 
 

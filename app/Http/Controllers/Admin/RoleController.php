@@ -20,11 +20,12 @@ class RoleController extends Controller
      */
     function __construct()
     {
-        // $this->middleware('auth:admin'); 
-        // $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => [' index','store']]);
-        //  $this->middleware('permission:role-create', ['only' => ['create','store']]);
-        //  $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-        //  $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+        $this->middleware('auth:admin'); 
+        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => [' index','store']]);
+        $this->middleware('permission:role-list', ['only' => ['index']]);
+         $this->middleware('permission:role-create', ['only' => ['create','store']]);
+         $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:role-delete', ['only' => ['destroy']]);
     }
     
     public function index()
@@ -58,7 +59,7 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        return view('admin.role.edit',[
+        return view('admin.roles.edit',[
             'role' => $role
         ]);
     }
