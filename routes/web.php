@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\AttributesController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RolesController;
+use App\Http\Controllers\OrderController;
 
 // The Welcome route
 Route::get('/', fn() => view('welcome'));
@@ -31,6 +32,13 @@ Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->group(function 
         Route::get('admin/roles/{role}', 'RoleController@show')->name('roles.show');
        // Route::get('/roles/{role}', [RolesController::class, 'show'])->name('roles.show');
        //Route::get('/roles/{role}', 'RolesController@show')->name('roles.show');
+
+
+       Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
+       Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('order.edit');
+       Route::put('/admin/orders/{order}/status/{status}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+       
+
 
 
 

@@ -7,6 +7,10 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Common;
 use App\Models\Attribute;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderProduct;
+
 
 class ApiController extends Controller
 {
@@ -168,6 +172,71 @@ class ApiController extends Controller
 
         return response()->json($products);
     }
+
+
+
+
+    public function submitOrderDetails(Request $request){
+
+        // create new user using order information
+        $name = $request->firstname.' '.$request->lastname;
+        $username = strtolower($request->firstname).strtolower($request->lastname);
+        $email = $request->email;
+        $mobile_number = $request->mobileNumber;
+        $cartTotal = $request->cartTotal;
+        $cartItems = $request->cartItems;
+        $order_information = array();
+
+        $user = User::create([
+            'name' => $name,
+            'username' => $username,
+            'email' => $email,
+            'email_verified_at' => now(),
+            'password' => bcrypt('12345678'),
+            'phone' => $mobile_number,
+            'role' => 'site-user'
+        ]);
+
+        $order_information['user_data'] = $user;
+
+        $order_db = new Order();
+        $order_db->order_number = 'ORD-'.date('ymdhi').mt_rand(1000,9999);
+        $order_db->total_amount = $cartTotal;
+        $order_db->status = 'pending';
+        $order_db->description = '';
+        $order_db->user_id = $user->id;
+        $order_db->save();
+
+        $order_information['order_data'] = $order_db;
+
+        foreach($cartItems as $key=>$data){
+            //return response()->json($data);
+            $orderproduct_db = new OrderProduct();
+            $orderproduct_db->order_id = $order_db->id;
+            $orderproduct_db->product_id = $data['product_id'];
+            $orderproduct_db->quantity = $data['quantity'];
+            $orderproduct_db->price = $data['product_price'] * $data['quantity'];
+            $orderproduct_db->save();
+        }
+
+
+        return response()->json($order_information);
+        //return response()->json([$request->all()]);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
