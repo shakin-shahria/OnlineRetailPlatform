@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -68,4 +68,20 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 =======
 # OnlineRetailPlatform
 A dynamic e-commerce portal leveraging Laravel and React for enhanced user experiences.
->>>>>>> 0ec896337a9c6817c9df86861480df335654aa34
+
+
+
+![Screenshot (653)](https://github.com/user-attachments/assets/8a165dff-67ee-4548-8bb5-0d6f219a4058)
+![Screenshot (654)](https://github.com/user-attachments/assets/9194e694-a5cf-4cb6-8ef9-9cfeebc698f6)
+
+![Screenshot (655)](https://github.com/user-attachments/assets/0e866b35-dd17-482e-89df-25d141561068)
+![Screenshot (657)](https://github.com/user-attachments/assets/d5bd2ea7-f95c-48dc-b7ed-44eed62838bd)
+
+
+![Screenshot (658)](https://github.com/user-attachments/assets/d4be42d6-06f2-4ac9-ae33-bb47569ac4cd)
+
+
+![Screenshot (659)](https://github.com/user-attachments/assets/b20799b9-9b01-4566-b79f-a0ec1daf771d)
+
+![Screenshot (660)](https://github.com/user-attachments/assets/888fe5c9-602e-40b2-b16c-3e530d8e68a1)
+
