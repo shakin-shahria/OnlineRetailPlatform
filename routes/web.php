@@ -13,6 +13,42 @@ use App\Http\Controllers\OrderController;
 // The Welcome route
 Route::get('/', fn() => view('welcome'));
 
+
+
+
+
+
+
+Route::get('/send-mail', function () {
+
+    $details = [
+
+        'title' => 'Mail from CDIP',
+        'body' => 'This is for testing email using smtp'
+
+    ];
+
+    \Mail::to('shakinshaharia@gmail.com')->send(new \App\Mail\CategoryEmail($details));
+
+   
+
+    dd("Email is Sent.");
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Routes for the admin section
 Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->group(function () {
     

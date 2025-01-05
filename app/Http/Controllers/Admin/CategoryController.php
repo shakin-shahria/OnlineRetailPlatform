@@ -60,7 +60,7 @@ class CategoryController extends Controller
     
             // Corrected path and method for image resizing
             $image_resize = Image::read(public_path('uploads/category/original/' . $filename));
-            $image_resize->resize(200, null, function ($constraint) {
+            $image_resize->resize(400,400, function ($constraint) {
                 $constraint->aspectRatio();
             });
             $image_resize->save(public_path('uploads/category/thumbnail/' . $filename));
@@ -79,6 +79,17 @@ class CategoryController extends Controller
                 ->where('category_row_id', $request->parent_id)
                 ->update(['has_child' => 1]);
         }
+        
+
+        $details = [
+    
+            'title' => '!!!! Category Creation Alert !!!!',
+            'body' => 'A new category "'.$request->category_name.'" has been created'
+    
+        ];
+        \Mail::to('shakinshahria@gmail.com')->send(new \App\Mail\CategoryEmail($details));
+
+
 
         return Redirect::route('category.index')->with('success', 'Category Created Successfully!');
     }
@@ -166,7 +177,7 @@ class CategoryController extends Controller
             $category_image->move(public_path('uploads/category/original/'), $filename);
 
             $image_resize = Image::read(public_path('uploads/category/original/' . $filename));
-            $image_resize->resize(200, null, function ($constraint) {
+            $image_resize->resize(400,400, function ($constraint) {
                 $constraint->aspectRatio();
             });
             $image_resize->save(public_path('uploads/category/thumbnail/' . $filename));

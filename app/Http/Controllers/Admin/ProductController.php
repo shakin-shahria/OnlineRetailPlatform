@@ -169,6 +169,21 @@ class ProductController extends Controller
 
             }
 
+
+
+            $details = [
+    
+                'title' => '!!!! Product Creation Alert !!!!',
+                'body' => 'A new category "'.$request->product_name.'" has been created'
+        
+            ];
+            \Mail::to('shakinshahria@gmail.com')->send(new \App\Mail\CategoryEmail($details));
+    
+
+
+
+
+
             Alert::success('Product Added Successfully!', 'success');    
             return redirect()->route('products.index');
 

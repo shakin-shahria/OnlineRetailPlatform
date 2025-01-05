@@ -52,10 +52,12 @@
 			              </thead>
 		                 <tbody> 
                           @php $count = 1; @endphp
+                          
 		                      @foreach($all_products as $row)
                             @php $pid = $row->product_id; @endphp
                             <tr>            
                                 <td>{{ $count }}</td>
+                                @php $count++; @endphp
                                 <td align="left">{{ $row->product_title }}</td>
                                 <td align="center">
                                   @if($row->product_images->feature_image != null)
