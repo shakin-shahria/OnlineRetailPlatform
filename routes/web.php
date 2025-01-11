@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -38,7 +38,15 @@ Route::get('/send-mail', function () {
 
 
 
+Route::get('/test-curl', function () {
+    $response = Http::get('https://api.github.com');
 
+    if ($response->successful()) {
+        return 'Curl is working!';
+    } else {
+        return 'Curl failed!';
+}
+});
 
 
 

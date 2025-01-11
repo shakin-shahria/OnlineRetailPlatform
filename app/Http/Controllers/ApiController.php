@@ -228,7 +228,30 @@ class ApiController extends Controller
 
 
 
+    public function getAllOrders()
+    {
+        // Fetch all orders from the database
+        $orders = Order::all();
 
+        // Return orders as JSON response
+        return response()->json($orders);
+    }
+   
+
+
+    public function getOrderById($id)
+    {
+        // Fetch the order by ID
+        $order = Order::find($id);
+
+        // If the order is not found, return a 404 error response
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        // Return the order data as JSON response
+        return response()->json($order);
+    }
 
 
 
