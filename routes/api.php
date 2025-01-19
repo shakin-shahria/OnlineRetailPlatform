@@ -21,6 +21,8 @@ Route::post('/submitOrderDetails', [ApiController::class, 'submitOrderDetails'])
 
 Route::get('/orders', [ApiController::class, 'getAllOrders']);
 Route::get('/orders/{id}', [ApiController::class, 'getOrderById']);
+Route::get('/orders/latest', [ApiController::class, 'getLatestOrder']);
+
 
 
 

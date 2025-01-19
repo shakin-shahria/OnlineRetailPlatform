@@ -133,28 +133,36 @@ class SslCommerzPaymentController extends Controller
 
     public function successPayment(Request $request){
 
-        if($request->status == 'VALID'){
+       
+
+
+        if ($request->status == 'VALID') {
 
             $transaction_id = $request->tran_id;
             $order_id = $request->value_a;
-
-            DB::table('orders')->where('id', $order_id)->update(array('transaction_id' => $transaction_id));
-
+            $payment_gateway = $request->card_type; 
+        
+            DB::table('orders')
+                ->where('id', $order_id)
+                ->update([
+                    'transaction_id' => $transaction_id,
+                    'payment_gateway' => $payment_gateway, 
+                ]);
         }
+        
 
         //return response()->json($request);
         $details = [
-    
             'title' => '!!!! Order Alert !!!!',
-            'body' => 'New order has been placed
-                        order_id: "'.$request->order_id.'"
-                        trnsaction_id:"'.$request->transaction_id.'"'
-    
+            'body' => 'New order has been placed.
+                        Order ID: ' . $request->order_id . '
+                        Transaction ID: ' . $request->transaction_id,
         ];
-        \Mail::to('shakinshahria@gmail.com')->send(new \App\Mail\CategoryEmail($details));
-
+        
+        \Mail::to('shakinshaharia@gmail.com')->send(new \App\Mail\CategoryEmail($details));
+        
         return redirect('http://localhost:5173/thankyou');
-    }
+    }        
 
     // public function exampleEasyCheckout()
     // {

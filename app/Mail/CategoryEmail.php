@@ -27,7 +27,7 @@ class CategoryEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Category Email',
+            subject: 'E-shopper Email',
         );
     }
 
