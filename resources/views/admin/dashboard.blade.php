@@ -27,24 +27,26 @@
                 <div class="col-md-4 mb-3">
                     <div class="card bg-light text-center shadow-sm">
                         <div class="card-body">
-                            <h6>Total Users</h6>
-                            <h3 class="font-weight-bold">1,234</h3>
+                            <h6>Total Orders</h6>
+                            <h3 class="font-weight-bold">5</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="card bg-light text-center shadow-sm">
                         <div class="card-body">
-                            <h6>Active Sessions</h6>
-                            <h3 class="font-weight-bold">567</h3>
+                            <h6> monthly total</h6>
+                            <h3 class="font-weight-bold">50000</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="card bg-light text-center shadow-sm">
                         <div class="card-body">
-                            <h6>Pending Tasks</h6>
-                            <h3 class="font-weight-bold">42</h3>
+                            <h6>Top sales</h6>
+                            <h3 class="font-weight-bold">Saree</h3>
+                            <h3 class="font-weight-bold">Shoes</h3>
+                            
                         </div>
                     </div>
                 </div>

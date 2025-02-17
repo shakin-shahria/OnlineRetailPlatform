@@ -66,7 +66,7 @@
                                   <img src="{{ asset('images/no_category.png') }}" alt="" width="50px" height="50px">
                                   @endif
                                 </td>
-                                <td align="left">{{ $row->getCategory->category_name }}</td>
+                                {{-- <td align="left">{{ $row->getCategory->category_name }}</td> --}}
                                 <td align="left"></td>
                                 <td align="left">{{ $row->product_price }}</td>
                                 <td align="left">@if(isset($row->product_discounts->discount_price)){{ $row->product_discounts->discount_price }}@endif</td>
